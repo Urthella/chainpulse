@@ -1,0 +1,21 @@
+[
+  { "chain": "aptos", "name": "aptoslabs", "kind": "aptos", "url": "https://api.mainnet.aptoslabs.com/v1" },
+  { "chain": "arbitrum", "name": "official", "kind": "evm", "url": "https://arb1.arbitrum.io/rpc" },
+  { "chain": "arbitrum", "name": "publicnode", "kind": "evm", "url": "https://arbitrum-one-rpc.publicnode.com" },
+  { "chain": "avalanche", "name": "official", "kind": "evm", "url": "https://api.avax.network/ext/bc/C/rpc" },
+  { "chain": "base", "name": "official", "kind": "evm", "url": "https://mainnet.base.org" },
+  { "chain": "base", "name": "publicnode", "kind": "evm", "url": "https://base-rpc.publicnode.com" },
+  { "chain": "bitcoin", "name": "blockstream", "kind": "esplora", "url": "https://blockstream.info/api" },
+  { "chain": "bitcoin", "name": "mempool", "kind": "esplora", "url": "https://mempool.space/api" },
+  { "chain": "cosmos", "name": "publicnode", "kind": "cometbft", "url": "https://cosmos-rpc.publicnode.com:443" },
+  { "chain": "ethereum", "name": "publicnode", "kind": "evm", "url": "https://ethereum-rpc.publicnode.com" },
+  { "chain": "hyperevm", "name": "official", "kind": "evm", "url": "https://rpc.hyperliquid.xyz/evm" },
+  { "chain": "near", "name": "fastnear", "kind": "near", "url": "https://rpc.mainnet.fastnear.com" },
+  { "chain": "near", "name": "official", "kind": "near", "url": "https://rpc.mainnet.near.org" },
+  { "chain": "optimism", "name": "official", "kind": "evm", "url": "https://mainnet.optimism.io" },
+  { "chain": "polygon", "name": "publicnode", "kind": "evm", "url": "https://polygon-bor-rpc.publicnode.com" },
+  { "chain": "solana", "name": "official", "kind": "solana", "url": "https://api.mainnet-beta.solana.com" },
+  { "chain": "starknet", "name": "publicnode", "kind": "starknet", "url": "https://starknet-rpc.publicnode.com" },
+  { "chain": "sui", "name": "graphql", "kind": "sui", "url": "https://graphql.mainnet.sui.io/graphql" },
+  { "chain": "ton", "name": "toncenter", "kind": "toncenter", "url": "https://toncenter.com/api/v2" }
+]
