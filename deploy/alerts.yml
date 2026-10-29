@@ -1,0 +1,31 @@
+groups:
+  - name: chainpulse
+    rules:
+      - alert: ChainRPCDown
+        expr: chainpulse_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.chain }} RPC {{ $labels.endpoint }} is not answering"
+
+      # Units differ per chain (a Solana slot is 0.4s, a Bitcoin block ~10m); tune per chain if this is noisy.
+      - alert: ChainRPCLagging
+        expr: chainpulse_behind > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.chain }} RPC {{ $labels.endpoint }} is {{ $value }} behind the best endpoint"
+
+      # Bitcoin regularly goes 30+ minutes without a block; everything else should move within minutes.
+      - alert: ChainHeadStuck
+        expr: |
+          chainpulse_head_age_seconds{chain!="bitcoin"} > 300
+            or
+          chainpulse_head_age_seconds{chain="bitcoin"} > 3600
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.chain }} RPC {{ $labels.endpoint }} has had no new head for {{ $value | humanizeDuration }}"

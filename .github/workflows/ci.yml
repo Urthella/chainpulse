@@ -16,3 +16,17 @@ jobs:
       - run: test -z "$(gofmt -l .)"
       - run: go vet ./...
       - run: go test -race -count=1 ./...
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t chainpulse .
+      - run: docker run --rm chainpulse -help
+
+  alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker run --rm -v "$PWD/deploy:/deploy" --entrypoint promtool prom/prometheus:v3.5.0 check rules /deploy/alerts.yml
+      - run: docker run --rm -v "$PWD/deploy:/deploy" --entrypoint promtool prom/prometheus:v3.5.0 test rules /deploy/alerts.test.yml
