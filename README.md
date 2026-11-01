@@ -73,6 +73,25 @@ All carry `chain`, `endpoint` and `kind` labels. `GET /status` returns the same 
 
 Config is a JSON list of `{"chain", "name", "kind", "url"}`; [endpoints.json](endpoints.json) is the built-in one. Point it at your own nodes and paid providers to compare them against public endpoints.
 
+## Deploy
+
+```bash
+docker build -t chainpulse .
+docker run -p 9090:9090 chainpulse        # or: -v $PWD/my.json:/my.json chainpulse -config /my.json
+```
+
+The image is a static binary on distroless, running as non-root.
+
+[deploy/alerts.yml](deploy/alerts.yml) has Prometheus alert rules:
+
+| Alert | Fires when |
+|---|---|
+| `ChainRPCDown` | an endpoint hasn't answered for 2 minutes |
+| `ChainRPCLagging` | an endpoint stays more than 30 heights behind its best peer for 5 minutes |
+| `ChainHeadStuck` | the head hasn't moved for 5 minutes, or 1 hour on Bitcoin, where 30 quiet minutes are normal |
+
+The rules have their own unit tests ([alerts.test.yml](deploy/alerts.test.yml)), run in CI with `promtool test rules`: an endpoint down for 1 minute doesn't page, Ethereum stuck for 20 minutes does, and Bitcoin at the same 20 minutes doesn't.
+
 ## Develop
 
 ```bash

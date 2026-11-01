@@ -1,0 +1,47 @@
+rule_files:
+  - alerts.yml
+
+evaluation_interval: 30s
+
+tests:
+  - interval: 30s
+    input_series:
+      - series: 'chainpulse_up{chain="base",endpoint="dead",kind="evm"}'
+        values: "0x20"
+      - series: 'chainpulse_up{chain="base",endpoint="fine",kind="evm"}'
+        values: "1x20"
+      - series: 'chainpulse_behind{chain="arbitrum",endpoint="slow",kind="evm"}'
+        values: "100x20"
+      - series: 'chainpulse_behind{chain="arbitrum",endpoint="close",kind="evm"}'
+        values: "2x20"
+      - series: 'chainpulse_head_age_seconds{chain="ethereum",endpoint="stuck",kind="evm"}'
+        values: "0+30x40"
+      # 20 minutes without a block is a normal day for Bitcoin.
+      - series: 'chainpulse_head_age_seconds{chain="bitcoin",endpoint="blockstream",kind="esplora"}'
+        values: "0+30x40"
+
+    alert_rule_test:
+      - eval_time: 1m
+        alertname: ChainRPCDown
+        exp_alerts: []
+      - eval_time: 3m
+        alertname: ChainRPCDown
+        exp_alerts:
+          - exp_labels: { severity: critical, chain: base, endpoint: dead, kind: evm }
+            exp_annotations: { summary: "base RPC dead is not answering" }
+      - eval_time: 6m
+        alertname: ChainRPCLagging
+        exp_alerts:
+          - exp_labels: { severity: warning, chain: arbitrum, endpoint: slow, kind: evm }
+            exp_annotations: { summary: "arbitrum RPC slow is 100 behind the best endpoint" }
+      - eval_time: 7m
+        alertname: ChainHeadStuck
+        exp_alerts:
+          - exp_labels: { severity: critical, chain: ethereum, endpoint: stuck, kind: evm }
+            exp_annotations: { summary: "ethereum RPC stuck has had no new head for 7m 0s" }
+      # Ethereum stuck for 20 minutes fires; Bitcoin at the same 20 minutes doesn't.
+      - eval_time: 20m
+        alertname: ChainHeadStuck
+        exp_alerts:
+          - exp_labels: { severity: critical, chain: ethereum, endpoint: stuck, kind: evm }
+            exp_annotations: { summary: "ethereum RPC stuck has had no new head for 20m 0s" }
